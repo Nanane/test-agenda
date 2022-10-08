@@ -10,7 +10,7 @@ The bonus features are:
 
 
 TODO
-- create "day" page
+- ~~create "day" page~~
     - empty page with the hours shown on a row
     - (maybe work with table and rowspan ?)
 
