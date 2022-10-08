@@ -1,3 +1,5 @@
+[![Node.js CI](https://github.com/Nanane/test-agenda/actions/workflows/node.js.yml/badge.svg)](https://github.com/Nanane/test-agenda/actions/workflows/node.js.yml)
+
 Features
 The needed features should be:
 - a daily view of the agenda with appointments of the current day
