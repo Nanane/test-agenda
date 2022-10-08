@@ -1,6 +1,6 @@
-import { Buyer } from "./types";
+import { ApiBuyer } from "./types";
 
-export async function fetchBuyers(): Promise<Buyer[]> {
+export async function fetchBuyers(): Promise<ApiBuyer[]> {
     return [
         {
             id: 1,

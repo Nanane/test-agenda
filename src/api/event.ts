@@ -6,15 +6,31 @@ import { ApiEvent } from "./types";
  * This file mocks calls to the /events backend with a local storage
  */
 
+ function hydrate(eventFromLocalStorage: any): ApiEvent {
+    return {
+        ...eventFromLocalStorage,
+        startDatetime: new Date(eventFromLocalStorage.startDatetime),
+        endDatetime: new Date(eventFromLocalStorage.endDatetime),
+    }
+}
+function extract(event: ApiEvent): any {
+    return {
+        ...event,
+        startDatetime: event.startDatetime.toISOString(),
+        endDatetime: event.endDatetime.toISOString(),
+    }
+}
+
 function getLocalStorageKey(day: Date) {
-    day.setHours(0,0,0,0);
-    return 'events-'+day.toISOString();
+    const keyDate = new Date(day);
+    keyDate.setHours(0,0,0,0);
+    return 'events-'+keyDate.toISOString();
 }
 
 export async function fetchEvents(day: Date): Promise<ApiEvent[]> {
     const key = getLocalStorageKey(day);
     const json = localStorage.getItem(key) || '[]'; // default to nothing
-    return JSON.parse(json);
+    return JSON.parse(json).map(hydrate);
 }
 
 export async function createEvent(eventData: Omit<ApiEvent, 'id'>): Promise<ApiEvent> {
@@ -25,7 +41,8 @@ export async function createEvent(eventData: Omit<ApiEvent, 'id'>): Promise<ApiE
         ...eventData
     };
     events.push(fakeEvent);
-    localStorage.setItem(key, JSON.stringify(events));
+    const eventsForStorage = events.map(extract);
+    localStorage.setItem(key, JSON.stringify(eventsForStorage));
     return fakeEvent;
 }
 
@@ -37,6 +54,6 @@ export async function deleteEvent(event: ApiEvent): Promise<ApiEvent> {
         throw new Error('event could not be deleted');
     }
     const newEvents = events.splice(eventIndex, 1);
-    localStorage.setItem(key, JSON.stringify(newEvents));
+    localStorage.setItem(key, JSON.stringify(newEvents.map(extract)));
     return event;
 }

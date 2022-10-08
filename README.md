@@ -21,7 +21,7 @@ TODO
     - events
     - persons (vendors + buyers)
 
-- add an event
+- ~~add an event~~
     - add modal + button
     - add form + submit
     - add form validation

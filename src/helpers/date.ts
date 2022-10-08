@@ -1,4 +1,4 @@
-import { differenceInMinutes } from "date-fns";
+import { addMinutes, differenceInMinutes, format, Interval, isBefore, isEqual } from "date-fns";
 import { SLOT_SIZE_IN_MINUTES, OPENING_HOUR, OPENING_MINUTE, CLOSING_HOUR, CLOSING_MINUTE } from "../constants";
 
 export function getOpeningDatetime(day: Date) {
@@ -15,4 +15,31 @@ export function getClosingDatetime(day: Date) {
 
 export function getNumberOfSlots(dateFrom: Date, dateTo: Date) {
     return Math.ceil(differenceInMinutes(dateTo, dateFrom, { roundingMethod: 'ceil' }) / SLOT_SIZE_IN_MINUTES);
+}
+
+export function getNextTimeslot(datetime: Date) {
+    return addMinutes(datetime, SLOT_SIZE_IN_MINUTES);
+}
+
+export function getTimeSlots(openingHour: number, openingMinute: number, closingHour: number, closingMinute: number)
+{
+    const timeSlots = [];
+
+    const openingDatetime = getOpeningDatetime(new Date());
+    const closingDatetime = getClosingDatetime(new Date());
+
+    let timeslotStart = new Date(openingDatetime);
+    let timeslotEnd = getNextTimeslot(openingDatetime);
+
+    while(isBefore(timeslotEnd, closingDatetime) || isEqual(timeslotEnd, closingDatetime)) {
+        timeSlots.push({
+            start: timeslotStart,
+            end: timeslotEnd
+        });
+
+        timeslotStart = new Date(timeslotEnd);
+        timeslotEnd = getNextTimeslot(timeslotEnd);
+    }
+    
+    return timeSlots;
 }

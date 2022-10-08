@@ -1,19 +1,19 @@
 export interface ApiEvent {
     id: number;
-    buyerId: Buyer['id'];
-    vendorId: Vendor['id'];
+    buyerId: ApiBuyer['id'];
+    vendorId: ApiVendor['id'];
     title: string;
     startDatetime: Date;
     endDatetime: Date;
 }
 
-export interface Buyer {
+export interface ApiBuyer {
     id: number;
     name: string;
     company: string;
 }
 
-export interface Vendor {
+export interface ApiVendor {
     id: number;
     name: string;
 }

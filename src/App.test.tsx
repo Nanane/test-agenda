@@ -5,6 +5,6 @@ import App from './App';
 describe('App', () => {
     it('should display the events page', () => {
         const screen = render(<App />);
-        expect(screen.getByText('Events for today')).toBeDefined();
+        expect(screen.getByText('Events for')).toBeDefined();
     });
 })
