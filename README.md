@@ -14,18 +14,18 @@ TODO
     - empty page with the hours shown on a row
     - (maybe work with table and rowspan ?)
 
-- create "api" endpoints (using localstorage for now)
+- ~~create "api" endpoints (using localstorage for now)~~
     - add typing
     - events
     - persons (vendors + buyers)
-
-- add display of current day events
-    - use fetch endpoint
 
 - add an event
     - add modal + button
     - add form + submit
     - add form validation
+
+- add display of current day events
+    - use fetch endpoint
 
 - delete an event
     - onRightCLick display menu with delete option
