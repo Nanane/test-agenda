@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMouse, useToggle, useClickAway } from "react-use";
 
 export function useContextMenu() {

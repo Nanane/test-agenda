@@ -1,5 +1,5 @@
 import { addMinutes, differenceInMinutes, format, Interval, isBefore, isEqual } from "date-fns";
-import { SLOT_SIZE_IN_MINUTES, OPENING_HOUR, OPENING_MINUTE, CLOSING_HOUR, CLOSING_MINUTE } from "../constants";
+import { SLOT_SIZE_IN_MINUTES, OPENING_HOUR, OPENING_MINUTE, CLOSING_HOUR, CLOSING_MINUTE } from "../../constants";
 
 export function getOpeningDatetime(day: Date) {
     const openingDatetime = new Date(day);
@@ -21,10 +21,9 @@ export function getNextTimeslot(datetime: Date) {
     return addMinutes(datetime, SLOT_SIZE_IN_MINUTES);
 }
 
-export function getTimeSlots(openingHour: number, openingMinute: number, closingHour: number, closingMinute: number)
+export function getTimeSlots()
 {
     const timeSlots = [];
-
     const openingDatetime = getOpeningDatetime(new Date());
     const closingDatetime = getClosingDatetime(new Date());
 
@@ -44,7 +43,7 @@ export function getTimeSlots(openingHour: number, openingMinute: number, closing
     return timeSlots;
 }
 
-export function combineTimeAndDate(timeStr: string, date: Date = new Date()): Date {
+export function getDateFromTime(timeStr: string, date: Date = new Date()): Date {
     const segments = timeStr.split(':');
     const time = {
         hours: parseInt(segments[0]),

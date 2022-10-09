@@ -1,9 +1,9 @@
-import Events from "./pages/events"
+import EventsPage from "./pages/events"
 
 function App() {
   return (
     <div className="container mx-auto">
-    <Events />
+    <EventsPage />
     </div>
   )
 }

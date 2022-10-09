@@ -1,6 +1,6 @@
 import { isAfter } from 'date-fns/esm';
 import { object, string, number, date, ValidationError, ref } from 'yup';
-import { combineTimeAndDate } from '../../helpers/date';
+import { getDateFromTime } from '../../../technical/helpers/date';
 
 export type ErrorsFor<T> = Partial<{[k in keyof T]: string[];}>
 
@@ -22,7 +22,7 @@ let eventSchema = object({
             return false;
         }
         const startTime = context.parent.startTime;
-        return isAfter(combineTimeAndDate(endTime), combineTimeAndDate(startTime));
+        return isAfter(getDateFromTime(endTime), getDateFromTime(startTime));
     }),
 });
 

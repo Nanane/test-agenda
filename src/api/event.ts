@@ -1,5 +1,4 @@
-import { faker } from "@faker-js/faker";
-import { generateFakeId } from "../helpers/faker";
+import { generateFakeId } from "../specific-IGNORE-/faker";
 import { ApiEvent } from "./types";
 
 /**

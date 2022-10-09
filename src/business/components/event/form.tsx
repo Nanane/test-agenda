@@ -1,13 +1,13 @@
 import format from "date-fns/format";
 import React, { useState } from "react";
-import { fetchBuyers } from "../../api/buyer";
-import { createEvent } from "../../api/event";
-import { ApiEvent, Buyer, Vendor } from "../../api/types";
-import { fetchVendors } from "../../api/vendor";
-import { CLOSING_HOUR, CLOSING_MINUTE, OPENING_HOUR, OPENING_MINUTE } from "../../constants";
-import { combineTimeAndDate, getTimeSlots } from "../../helpers/date";
-import { formDataToJSON } from "../../helpers/form";
-import { useApi } from "../../helpers/hooks/api";
+import { fetchBuyers } from "../../../api/buyer";
+import { createEvent } from "../../../api/event";
+import { ApiBuyer, ApiEvent, ApiVendor } from "../../../api/types";
+import { fetchVendors } from "../../../api/vendor";
+import { CLOSING_HOUR, CLOSING_MINUTE, OPENING_HOUR, OPENING_MINUTE } from "../../../constants";
+import { formDataToJSON } from "../../../specific-IGNORE-/form";
+import { getDateFromTime, getTimeSlots } from "../../../technical/helpers/date";
+import { useApi } from "../../../technical/hooks/api";
 import { ErrorsFor, EventFormData, validate } from "./utils";
 
 interface FormErrorProps {
@@ -45,9 +45,9 @@ export default function EventForm({ onSubmit, forDate }: EventFormProps) {
         }
 
         // parse startTime input
-        const startDatetime = combineTimeAndDate(json.startTime, forDate);
+        const startDatetime = getDateFromTime(json.startTime, forDate);
         // parse endTime input
-        const endDatetime = combineTimeAndDate(json.startTime, forDate);
+        const endDatetime = getDateFromTime(json.endTime, forDate);
 
         return createEvent({
             ...json,
@@ -56,21 +56,21 @@ export default function EventForm({ onSubmit, forDate }: EventFormProps) {
         }).then(onSubmit)
     }
 
-    const vendors = useApi<Vendor[]>({ promise: fetchVendors(), initialValue: []});
-    const buyers = useApi<Buyer[]>({ promise: fetchBuyers(), initialValue: [] });
+    const vendors = useApi<ApiVendor[]>({ promise: fetchVendors(), initialValue: []});
+    const buyers = useApi<ApiBuyer[]>({ promise: fetchBuyers(), initialValue: [] });
 
-    const timeSlots = getTimeSlots(OPENING_HOUR, OPENING_MINUTE, CLOSING_HOUR, CLOSING_MINUTE);
+    const timeSlots = getTimeSlots();
 
     return (
         <form onSubmit={handleSubmit}>
             <div className="my-2">
-                <label className="inline-block w-1/5" htmlFor="title">Event name :</label>
-                <input className="box-border inline-block w-1/3 border" type="text" name="title" id="title" data-testid="input-title"/>
+                <label className="inline-block w-1/3" htmlFor="title">Event name :</label>
+                <input className="box-border inline-block w-2/3 border" type="text" name="title" id="title" data-testid="input-title"/>
                 <FormError errors={errors.title} />
             </div>
             <div className="my-2">
-                <label className="inline-block w-1/5" htmlFor="vendorId">Vendor :</label>
-                <select className="box-border inline-block w-1/3 border" name="vendorId" id="vendorId">
+                <label className="inline-block w-1/3" htmlFor="vendorId">Vendor :</label>
+                <select className="box-border inline-block w-2/3 border" name="vendorId" id="vendorId">
                     {vendors.entities.map(v => (
                         <option key={`vendor-${v.id}`} value={v.id}>{v.name}</option>
                     ))}
@@ -78,8 +78,8 @@ export default function EventForm({ onSubmit, forDate }: EventFormProps) {
                 <FormError errors={errors.vendorId} />
             </div>
             <div className="my-2">
-                <label className="inline-block w-1/5" htmlFor="buyerId">Buyer :</label>
-                <select className="box-border inline-block w-1/3 border" name="buyerId" id="buyerId">
+                <label className="inline-block w-1/3" htmlFor="buyerId">Buyer :</label>
+                <select className="box-border inline-block w-2/3 border" name="buyerId" id="buyerId">
                     {buyers.entities.map(b => (
                         <option key={`buyer-${b.id}`} value={b.id}>{b.name}</option>
                     ))}
@@ -87,8 +87,8 @@ export default function EventForm({ onSubmit, forDate }: EventFormProps) {
                 <FormError errors={errors.buyerId} />
             </div>
             <div className="my-2">
-                <label className="inline-block w-1/5" htmlFor="#">Event duration</label>
-                <div className="box-border inline-block w-1/3 border" >
+                <label className="inline-block w-1/3" htmlFor="#">Event duration</label>
+                <div className="box-border inline-block w-2/3 border" >
                     <select name="startTime" >
                         {timeSlots.map((t, index) => (
                             <option key={`timeslot-start-${index}`} value={format(t.start, 'HH:mm')}>{format(t.start, 'HH:mm')}</option>

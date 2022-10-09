@@ -10,11 +10,11 @@ The bonus features are:
 - Moving through days (previous, next, date picker)
 - Capacity to easily move an appointment to another timeslot
 
-
 TODO
 - ~~create "day" page~~
     - empty page with the hours shown on a row
     - (maybe work with table and rowspan ?)
+        -> used height and it works great
 
 - ~~create "api" endpoints (using localstorage for now)~~
     - add typing
@@ -25,7 +25,7 @@ TODO
     - add modal + button
     - add form + submit
 
-- add event form validation
+- ~~add event form validation~~
     - requires a title, vendorId, buyerId, and endTime should be after startTime
 
 - ~~add display of current day events~~
