@@ -1,42 +1,45 @@
 import { faker } from "@faker-js/faker";
 import { addDays, subDays } from "date-fns";
 import format from "date-fns/format";
-import { MouseEvent, useCallback, useState } from "react";
+import { MouseEvent, useCallback, useEffect, useState } from "react";
 import { useToggle } from "react-use";
 import { deleteEvent, fetchEvents } from "../../api/event";
 import { ApiEvent } from "../../api/types";
 import EventForm from "../../components/event/form";
 import { getNumberOfSlots, getOpeningDatetime } from "../../helpers/date";
-import { useApi } from "../../helpers/hooks/api";
 import { useContextMenu } from "../../helpers/hooks/contextMenu";
 import Modal from "../../ui/modal";
 
 
 const AGENDA_SCALE = ['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
 
+/**
+ * Gives the size representing a certain amount of time slots
+ * @param nbSlots the number of slots we want to calculate
+ * @returns string in the format (ex: "45px", "15px", ...)
+ */
 function slotSize(nbSlots: number = 1) {
     return `${nbSlots * 15}px`
 }
 
 export default function Events() {
-    const [ modalIsOpen, toggleModal ] = useToggle(false);
-    const contextMenu = useContextMenu();
+    const [ events, setEvents ] = useState<ApiEvent[]>([]);
     const [ selectedEvent, setSelectedEvent ] = useState<ApiEvent[]>([]);
     const [ currentDate, setCurrentDate ] = useState(new Date());
-    const fetchEventsForDate = useCallback(() => fetchEvents(currentDate), [currentDate]);
-    const events = useApi<ApiEvent[]>({
-        fetchFunc: fetchEventsForDate,
-        initialValue: [],
-    });
+    const [ modalIsOpen, toggleModal ] = useToggle(false); // event creation modal
+    const contextMenu = useContextMenu(); // context menu for actions on events displayed
+
+    const refreshEvents = useCallback(() => fetchEvents(currentDate).then(setEvents), [currentDate]);
+    useEffect(() => {refreshEvents()}, [currentDate]);
 
     const handleGoToPrevDay = () => {
         setCurrentDate(subDays(currentDate, 1));
-        events.refetch();
+        refreshEvents
     }
 
     const handleGoToNextDay = () => {
         setCurrentDate(addDays(currentDate, 1));
-        events.refetch();
+        refreshEvents
     }
 
     const handleEventRightClick = (e: MouseEvent<any,any>, event: ApiEvent) => {
@@ -48,7 +51,7 @@ export default function Events() {
     const handleSelectedEventDelete = () => {
         Promise.all(selectedEvent.map(deleteEvent))
             .then(() => setSelectedEvent([]))
-            .then(() => events.refetch());
+            .then(() => refreshEvents());
         contextMenu.hide();
     }
 
@@ -71,7 +74,7 @@ export default function Events() {
                     )
                 )}
                 {/** Events - absolute positioning */}
-                {events.entities.map(event => {
+                {events.map(event => {
                     const nbSlotsForEvent = getNumberOfSlots(event.startDatetime, event.endDatetime);
                     const nbSlotsFromOpening = getNumberOfSlots(getOpeningDatetime(event.startDatetime), event.startDatetime);
                     return <div
@@ -92,7 +95,7 @@ export default function Events() {
             <Modal isOpen={modalIsOpen} onHide={toggleModal}>
                 <h1 className="text-lg font-bold">Book an appointment</h1>
                 <EventForm onSubmit={() => {
-                    toggleModal(); events.refetch();
+                    toggleModal(); refreshEvents();
                 }} forDate={currentDate}/>
             </Modal>
             {/** event contextual menu */}

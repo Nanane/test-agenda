@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
 
 interface UseApiProps<T> {
-    fetchFunc: () => Promise<T>;
+    promise: Promise<T>;
     initialValue: T;
 }
 
 export function useApi<T>({
-    fetchFunc,
+    promise,
     initialValue
 }: UseApiProps<T>) {
     const [entities, setEntities] = useState(initialValue);
 
     const fetchAndState = useCallback(() => {
-        fetchFunc().then(setEntities).catch(console.log);
-    }, [fetchFunc]);
+        promise.then(setEntities).catch(console.log);
+    }, [promise]);
 
     useEffect(() => {
         fetchAndState();

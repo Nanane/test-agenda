@@ -43,3 +43,14 @@ export function getTimeSlots(openingHour: number, openingMinute: number, closing
     
     return timeSlots;
 }
+
+export function combineTimeAndDate(timeStr: string, date: Date = new Date()): Date {
+    const segments = timeStr.split(':');
+    const time = {
+        hours: parseInt(segments[0]),
+        minutes: parseInt(segments[1]),
+    };
+    const returnedDate = new Date(date);
+    returnedDate.setHours(time.hours, time.minutes, 0, 0);
+    return returnedDate;
+}

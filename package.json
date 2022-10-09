@@ -13,11 +13,13 @@
     "@faker-js/faker": "^7.5.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
+    "@types/validator": "^13.7.7",
     "date-fns": "^2.29.3",
     "global-jsdom": "^8.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-use": "^17.4.0"
+    "react-use": "^17.4.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",

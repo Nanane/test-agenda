@@ -24,7 +24,9 @@ TODO
 - ~~add an event~~
     - add modal + button
     - add form + submit
-    - add form validation
+
+- add event form validation
+    - requires a title, vendorId, buyerId, and endTime should be after startTime
 
 - ~~add display of current day events~~
     - use fetch endpoint
