@@ -29,7 +29,7 @@ function getLocalStorageKey(day: Date) {
 
 export async function fetchEvents(day: Date): Promise<ApiEvent[]> {
     const key = getLocalStorageKey(day);
-    const json = localStorage.getItem(key) || '[]'; // default to nothing
+    const json = window.localStorage.getItem(key) || '[]'; // default to nothing
     return JSON.parse(json).map(hydrate);
 }
 
@@ -42,7 +42,7 @@ export async function createEvent(eventData: Omit<ApiEvent, 'id'>): Promise<ApiE
     };
     events.push(fakeEvent);
     const eventsForStorage = events.map(extract);
-    localStorage.setItem(key, JSON.stringify(eventsForStorage));
+    window.localStorage.setItem(key, JSON.stringify(eventsForStorage));
     return fakeEvent;
 }
 
@@ -53,7 +53,7 @@ export async function deleteEvent(event: ApiEvent): Promise<ApiEvent> {
     if (eventIndex === -1) {
         throw new Error('event could not be deleted');
     }
-    const newEvents = events.splice(eventIndex, 1);
-    localStorage.setItem(key, JSON.stringify(newEvents.map(extract)));
-    return event;
+    const deletedEvent = events.splice(eventIndex, 1);
+    window.localStorage.setItem(key, JSON.stringify(events.map(extract)));
+    return deletedEvent[0];
 }

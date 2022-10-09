@@ -7,7 +7,7 @@ import { fetchVendors } from "../../api/vendor";
 import { CLOSING_HOUR, CLOSING_MINUTE, OPENING_HOUR, OPENING_MINUTE } from "../../constants";
 import { getTimeSlots } from "../../helpers/date";
 import { formDataToJSON } from "../../helpers/form";
-import { useApi } from "../../hooks/api";
+import { useApi } from "../../helpers/hooks/api";
 
 interface EventFormProps {
     onSubmit: (event: ApiEvent) => void;

@@ -26,13 +26,13 @@ TODO
     - add form + submit
     - add form validation
 
-- add display of current day events
+- ~~add display of current day events~~
     - use fetch endpoint
 
-- delete an event
+- ~~delete an event~~
     - onRightCLick display menu with delete option
 
-- navigate through days
+- ~~navigate through days~~
     - add input date with current day
     - add buttons to update input + refetch data
 
