@@ -1,31 +1,31 @@
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    theme?: 'primary' | 'default' | 'danger';
+interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
+    type?: 'primary' | 'default' | 'danger' | 'ghost';
+    htmlType?: 'submit' | 'reset' | 'button'; // rename the HTML type prop
     size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
-// default : 
-// primary : block my-4 
-// danger  : border-box w-full
 const classNames = {
     default: ['text-white','bg-slate-300','hover:bg-slate-800'],
     primary: ['text-white','bg-blue-700','hover:bg-blue-800'],
     danger: ['text-white','bg-red-600','hover:bg-red-700'],
+    ghost: ['text-black', 'bg-transparent', 'hover:bg-slate-300'],
     sm: ['font-medium','rounded-lg','text-sm'],
     md: ['font-medium','rounded-lg','text-md'],
     lg: ['font-medium','rounded-lg','text-lg'],
     xl: ['font-medium','rounded-lg','text-xl'],
 }
 
-export default function Button({ className, theme = 'default', size = 'md', children, ...rest }: ButtonProps) {
+export default function Button({ className, type = 'default', size = 'md', children, htmlType, ...rest }: ButtonProps) {
     const defaultClassNames: string[] = ['text-center', 'p-2'];
     const propsClassNames = (className || '').split(' ');
-    const themeClassNames = classNames[theme];
+    const typeClassNames = classNames[type];
     const sizeClassNames = classNames[size];
-    const appliedClassNames = defaultClassNames.concat(themeClassNames).concat(sizeClassNames).concat(propsClassNames);
+    const appliedClassNames = defaultClassNames.concat(typeClassNames).concat(sizeClassNames).concat(propsClassNames);
 
     return (
         <button
             className={appliedClassNames.join(' ')}
+            type={htmlType}
             {...rest}
         >
             {children}

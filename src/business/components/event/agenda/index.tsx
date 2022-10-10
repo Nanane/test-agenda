@@ -54,9 +54,9 @@ export default function EventAgenda({
                 {events.map(event => <EventAgendaItem key={`event-${event.id}`} event={event} onRightClick={handleEventRightClick} />)}
             </div>
             {/** event contextual menu */}
-            <div ref={contextMenu.ref} className="w-48 absolute z-20 p-1 bg-slate-200 rounded-md drop-shadow-lg border border-slate-400 border-outset" style={{ display: (contextMenu.isOpen ? 'block' : 'none'), top: contextMenu.top, left: contextMenu.left }}>
-                <p className="text-slate-500 px-2 mb-2 border-b border-slate-300">Actions</p>
-                <Button theme="danger" className="border-box w-full rounded-md" onClick={handleSelectedEventDelete}>x Delete</Button>
+            <div ref={contextMenu.ref} className="w-48 absolute z-20 p-1 bg-slate-200 rounded-none drop-shadow-lg border border-slate-400 border-outset" style={{ display: (contextMenu.isOpen ? 'block' : 'none'), top: contextMenu.top, left: contextMenu.left }}>
+                <p className="text-slate-500 px-2 mb-2 border-b border-slate-300 text-center">Actions</p>
+                <Button type="ghost" className="border-box w-full rounded-none text-red-500" onClick={handleSelectedEventDelete}>x Delete</Button>
             </div>
         </>
     )
