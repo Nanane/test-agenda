@@ -1,25 +1,14 @@
 import format from "date-fns/format";
 import React, { useState } from "react";
 import { fetchBuyers } from "../../../api/buyer";
-import { createEvent } from "../../../api/event";
+import { createEvent, fetchEvents } from "../../../api/event";
 import { ApiBuyer, ApiEvent, ApiVendor } from "../../../api/types";
 import { fetchVendors } from "../../../api/vendor";
-import { CLOSING_HOUR, CLOSING_MINUTE, OPENING_HOUR, OPENING_MINUTE } from "../../../constants";
 import { formDataToJSON } from "../../../specific-IGNORE-/form";
 import { getDateFromTime, getTimeSlots } from "../../../technical/helpers/date";
 import { useApi } from "../../../technical/hooks/api";
-import { ErrorsFor, EventFormData, validate } from "./utils";
-
-interface FormErrorProps {
-    errors?: string[];
-}
-
-function FormError({ errors }: FormErrorProps) {
-    if (!errors || errors.length === 0) {
-        return <></>;
-    }
-    return (<>{errors.map(error => (<div className="text-red-500 font-bold block">{error}</div>))}</>);
-}
+import { FormError } from "../../../ui/form/error";
+import { detectOverlaps, ErrorsFor, EventFormData, validate } from "./utils";
 
 interface EventFormProps {
     onSubmit: (event: ApiEvent) => void;
@@ -27,7 +16,7 @@ interface EventFormProps {
 }
 
 export default function EventForm({ onSubmit, forDate }: EventFormProps) {
-    const [errors, setErrors] = useState<ErrorsFor<EventFormData>>({});
+    const [errors, setErrors] = useState<ErrorsFor<EventFormData> & { overlaps?: string[] }>({});
 
     const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
@@ -49,11 +38,23 @@ export default function EventForm({ onSubmit, forDate }: EventFormProps) {
         // parse endTime input
         const endDatetime = getDateFromTime(json.endTime, forDate);
 
-        return createEvent({
+        // check for overlaps
+        const eventToCreate = {
             ...json,
             startDatetime,
             endDatetime,
-        }).then(onSubmit)
+        };
+
+        fetchEvents(eventToCreate.startDatetime).then(events => {
+            if (detectOverlaps(eventToCreate, events)) {
+                throw {
+                    overlaps: ['This event overlaps with another one'],
+                };
+            }
+            return eventToCreate;
+        }).then((e) => {
+            createEvent(e).then(onSubmit)
+        }).catch(setErrors);
     }
 
     const vendors = useApi<ApiVendor[]>({ promise: fetchVendors(), initialValue: []});
@@ -63,10 +64,11 @@ export default function EventForm({ onSubmit, forDate }: EventFormProps) {
 
     return (
         <form onSubmit={handleSubmit}>
+            <FormError error={errors.overlaps} />
             <div className="my-2">
                 <label className="inline-block w-1/3" htmlFor="title">Event name :</label>
                 <input className="box-border inline-block w-2/3 border" type="text" name="title" id="title" data-testid="input-title"/>
-                <FormError errors={errors.title} />
+                <FormError error={errors.title} />
             </div>
             <div className="my-2">
                 <label className="inline-block w-1/3" htmlFor="vendorId">Vendor :</label>
@@ -75,7 +77,7 @@ export default function EventForm({ onSubmit, forDate }: EventFormProps) {
                         <option key={`vendor-${v.id}`} value={v.id}>{v.name}</option>
                     ))}
                 </select>
-                <FormError errors={errors.vendorId} />
+                <FormError error={errors.vendorId} />
             </div>
             <div className="my-2">
                 <label className="inline-block w-1/3" htmlFor="buyerId">Buyer :</label>
@@ -84,7 +86,7 @@ export default function EventForm({ onSubmit, forDate }: EventFormProps) {
                         <option key={`buyer-${b.id}`} value={b.id}>{b.name}</option>
                     ))}
                 </select>
-                <FormError errors={errors.buyerId} />
+                <FormError error={errors.buyerId} />
             </div>
             <div className="my-2">
                 <label className="inline-block w-1/3" htmlFor="#">Event duration</label>
@@ -100,8 +102,8 @@ export default function EventForm({ onSubmit, forDate }: EventFormProps) {
                         ))}
                     </select>
                 </div>
-                <FormError errors={errors.startTime} />
-                <FormError errors={errors.endTime} />
+                <FormError error={errors.startTime} />
+                <FormError error={errors.endTime} />
             </div>
             <button className="block w-80 bg-teal-500 text-white text-lg rounded px-8 mx-auto mt-8" data-testid="submit">Book</button>
         </form>

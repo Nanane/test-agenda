@@ -37,13 +37,17 @@ export default function EventAgenda({
 
     return (
         <>
+            {events.length > 0 ? <p className="my-4 text-slate-300">You can right click on events to delete them</p> : null}
             <div className="relative mt-8">
                 <div className="divide-y divide-slate-300">
                     {/** Agenda background - relative positioning*/}
                     {AGENDA_SCALE.map((graduation, index) => (
                         <div
                             key={`graduation-${index}`}
-                            className={`block h-slot-4 text-slate-400 border-t border-slate-300`}
+                            className={`block text-slate-400 border-t border-slate-300`}
+                            style={{
+                                height: slotSize(4),
+                            }}
                         >
                             {graduation}
                         </div>

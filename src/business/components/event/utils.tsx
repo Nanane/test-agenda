@@ -1,5 +1,7 @@
+import { areIntervalsOverlapping } from 'date-fns';
 import { isAfter } from 'date-fns/esm';
 import { object, string, number, date, ValidationError, ref } from 'yup';
+import { ApiEvent } from '../../../api/types';
 import { getDateFromTime } from '../../../technical/helpers/date';
 
 export type ErrorsFor<T> = Partial<{[k in keyof T]: string[];}>
@@ -38,4 +40,13 @@ export function validate(formData: EventFormData): ErrorsFor<EventFormData> {
         }
     }
     return {};
+}
+
+export function detectOverlaps(event: Omit<ApiEvent, 'id'>, events: ApiEvent[]) {
+    return events.find(e => 
+        areIntervalsOverlapping(
+            { start: event.startDatetime, end: event.endDatetime },
+            { start: e.startDatetime, end: e.endDatetime }
+        )
+    ) !== undefined;
 }

@@ -4,5 +4,5 @@
  * @returns string in the format (ex: "45px", "15px", ...)
  */
 export function slotSize(nbSlots: number = 1) {
-    return `${nbSlots * 15}px`
+    return `${nbSlots * 1.25}rem`
 }
